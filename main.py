@@ -75,10 +75,17 @@ FAKE_DATA = {
     ]
 }
 
-@app.route('/detectar')
+@app.route('/detectar',  methods=['POST', 'GET'])
 def detect():
-    user_ip = request.remote_addr
-    return jsonify(FAKE_DATA)
+    if request.method == 'POST':
+        body = request.get_json()
+        audio_data = body['audio_data']
+
+        ## Analizar audio y obtener resultados 
+        
+        return jsonify({ "audio_data": audio_data, "results": FAKE_DATA})
+    else:
+        return jsonify(FAKE_DATA)
 
 if __name__ == "__main__":
     app.run(port=8080, debug=True)
