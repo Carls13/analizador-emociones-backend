@@ -1,2 +1,5 @@
 flask
 Gunicorn
+numpy
+scipy 
+matplotlib
