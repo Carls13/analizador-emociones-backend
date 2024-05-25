@@ -3,3 +3,4 @@ Gunicorn
 numpy
 scipy 
 matplotlib
+librosa

@@ -1,13 +1,10 @@
 from flask import Flask, request, jsonify
 import base64
-import numpy as np
 # import PyWavelets
-
-from scipy.fft import fft, fftfreq
-from matplotlib import pyplot as plt
 
 from utils.constants import FAKE_DATA
 from utils.load_audio import load_audio
+from utils.plot_spectrum import plot_magnitude_spectrum
 
 app = Flask(__name__)
 
@@ -46,19 +43,21 @@ def detect():
         print(f"Data Size : {data_chunk_size}")
         print(f"Data : {audio_data}")
         print(f"Type of data array : {type(audio_data[0])}")  
-        
+
+        plot_magnitude_spectrum(audio_data, 'Audio spectrum', sample_rate, 0.1)
         ## Muestrear la señal 
 
         ## Realizar transformada de Wavelet, Gabor, Fourier y verificar cómo obtener los rasgos cracterísticos de la voz
 
         # Number of samples in normalized_tone
 
-        yf = fft(audio_data)
-        print(f"Fourier transform: {yf}")
-        xf = fftfreq(number_of_samples, 1 / sample_rate)
+        
 
-        # plt.plot(xf, np.abs(yf))
-        # plt.show()
+        ## Experimentar con WEKA        
+        ## Verificar bien los resultados graficados
+        ## Documentarse bien sobre la naturaleza armónica de la voz
+        ## Investigar cómo obtener los rasgos cracterísticos de la voz
+
         ## Extraer parámetros característicos de la voz
 
         ## Supervised Learning

@@ -1,5 +1,7 @@
 import struct
 import numpy as np
+import librosa
+import os
 
 def load_audio(file_path):
     with open(file_path,'rb') as audio_file:
@@ -32,8 +34,7 @@ def load_audio(file_path):
         data = audio_file.read(data_chunk_size)
     
     # Converting the raw binary data to a list of integers : 
-    data_array = np.frombuffer(data, dtype=np.uint16)
-    # Convert to float32
-    data_array = data_array.astype(np.float32)
+    data_array, sr = librosa.load(os.path.join('', file_path))
+    print(data_array.shape, sr)
     
     return header_chunk_id, header_chunk_size, header_chunk_format, format_chunk_id, format_chunk_size, data_array, format_code, channels, sample_width, sample_rate, byte_rate, block_align, data_chunk_id, data_chunk_size
