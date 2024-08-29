@@ -4,3 +4,9 @@ numpy
 scipy 
 matplotlib
 librosa
+PyWavelets
+pickle-mixin
+keras
+tensorflow
+pandas
+scikit-learn

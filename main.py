@@ -1,10 +1,17 @@
 from flask import Flask, request, jsonify
 import base64
-# import PyWavelets
+import pywt
+import pickle
 
 from utils.constants import FAKE_DATA
 from utils.load_audio import load_audio
 from utils.plot_spectrum import plot_magnitude_spectrum
+from utils.get_wavelet_transform import get_wavelet_transform
+from sklearn.preprocessing import OneHotEncoder
+from utils.mfcc import extract_mfcc
+from tensorflow.keras.models import load_model
+import numpy as np
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -19,7 +26,7 @@ def detect():
         wav_file = open("temp.wav", "wb")
         wav_file.write(decode_string)
 
-        file_name = "./Audio de prueba.wav"
+        file_name = "./exagerado-feliz.wav"
         header_chunk_id , header_chunk_size, header_chunk_format, format_chunk_id, format_chunk_size, audio_data, format_code, channels, sample_width, sample_rate, byte_rate, block_align, data_chunk_id, data_chunk_size = load_audio(file_name)
 
         number_of_samples = len(audio_data)
@@ -44,27 +51,33 @@ def detect():
         print(f"Data : {audio_data}")
         print(f"Type of data array : {type(audio_data[0])}")  
 
-        plot_magnitude_spectrum(audio_data, 'Audio spectrum', sample_rate, 0.1)
-        ## Muestrear la señal 
+        mfcc_data = { 'speech': file_name }
+        df = pd.DataFrame(data=mfcc_data, index=[0])
+        x_mfcc = df['speech'].apply(lambda x: extract_mfcc(x))
+        X= [x for x in x_mfcc]
+        X = np.array(X)
+        X = np.expand_dims(X, -1)
+        print(X, X.shape)
 
-        ## Realizar transformada de Wavelet, Gabor, Fourier y verificar cómo obtener los rasgos cracterísticos de la voz
+        model = load_model('model.h5')
 
-        # Number of samples in normalized_tone
+        # evaluate model 
+        pred_test = model.predict(X)
 
-        
+        print(pred_test[0], 'HERE')
 
-        ## Experimentar con WEKA        
-        ## Verificar bien los resultados graficados
-        ## Documentarse bien sobre la naturaleza armónica de la voz
-        ## Investigar cómo obtener los rasgos cracterísticos de la voz
+        df = pd.read_csv('data.csv')
 
-        ## Extraer parámetros característicos de la voz
+        enc = OneHotEncoder()
+        enc.fit_transform(df[['label']])
 
-        ## Supervised Learning
+        y_pred = enc.inverse_transform(pred_test)
 
-        ## Evaluación de modelos: cross validation, matriz de confusión, k-nearest neighbors
-        
-        return jsonify({ "audio_data": decoded_audio_data, "results": FAKE_DATA})
+        prediction = y_pred[0]
+
+        print('The predicition is ', prediction[0])
+
+        return jsonify({ "prediction": prediction[0] })
     else:
         return jsonify(FAKE_DATA)
 
