@@ -26,7 +26,7 @@ def detect():
         wav_file = open("temp.wav", "wb")
         wav_file.write(decode_string)
 
-        file_name = "./exagerado-feliz.wav"
+        file_name = "./temp.wav"
         header_chunk_id , header_chunk_size, header_chunk_format, format_chunk_id, format_chunk_size, audio_data, format_code, channels, sample_width, sample_rate, byte_rate, block_align, data_chunk_id, data_chunk_size = load_audio(file_name)
 
         number_of_samples = len(audio_data)
