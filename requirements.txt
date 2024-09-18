@@ -10,3 +10,5 @@ keras
 tensorflow
 pandas
 scikit-learn
+waitress
+tensorflow-gpu==2.8.0
